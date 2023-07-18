@@ -61,9 +61,10 @@ def animate_data(start_x, start_y, end_x, end_y, data_plot, scatter, critical_bo
         nonlocal data_plot
 
         new_data = np.random.rand(1, 2)
-        new_data[0, 1] = new_data[0, 1] + 4
+        if new_data[0, 0] < 0.1:
+            new_data[0, 0] = new_data[0, 0] + 0.1
+        new_data[0, 1] = new_data[0, 1] + 3
         data_plot = np.vstack((data_plot, new_data))
-        print(data_plot)
 
         indices = np.arange(max(0, i - 2), i + 1)
         x_data = []
@@ -72,13 +73,18 @@ def animate_data(start_x, start_y, end_x, end_y, data_plot, scatter, critical_bo
             x, y = map_axes(start_x, start_y, end_x, end_y, data_plot[index, 0], data_plot[index, 1])
             x_data.append(x)
             y_data.append(y)
-        sizes = [10, 25, 50]
+        sizes = [10, 25, 40]
         scatter.set_offsets(np.c_[x_data, y_data])
         scatter.set_sizes(sizes)
         last_dot = shapely.Point(x_data[-1], y_data[-1])
         dist = critical_boundary.distance(last_dot)
-        if dist < 200:
+        orientation = 0.5*(data_plot[index, 1] - 1.8) - 3.05*(data_plot[index, 0] - 0.2)
+        print(data_plot[index, 1], data_plot[index, 0])
+        print(orientation)
+        if orientation > 0:
             scatter.set_color('red')
+        elif dist < 150:
+            scatter.set_color('yellow')
         else:
             scatter.set_color('green')
 
@@ -101,7 +107,7 @@ def main():
     ax.imshow(img_crop, cmap='gray')
     ax.plot(x_c, y_c)
 
-    data = np.array([[0.6, 2.0], [0.5, 3.0], [0.55, 4.11], [0.7, 3.2], [0.8, 2.8]])
+    data = np.array([[0.6, 2.0], [0.5, 3.0]])
     animation = FuncAnimation(fig, animate_data(start_x, start_y, end_x, end_y, data, scatter, critical_boundary),
                               frames=15, interval=1000, blit=True, repeat=True)
     plt.show()
