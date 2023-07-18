@@ -107,7 +107,8 @@ def main():
     ax.imshow(img_crop, cmap='gray')
     ax.plot(x_c, y_c)
 
-    data = np.array([[0.6, 2.0], [0.5, 3.0]])
+    data = np.array([0.0, 0.0])
+    print(data.shape)
     animation = FuncAnimation(fig, animate_data(start_x, start_y, end_x, end_y, data, scatter, critical_boundary),
                               frames=15, interval=1000, blit=True, repeat=True)
     plt.show()
